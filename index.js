@@ -1,5 +1,5 @@
 import {createServer} from "node:http";
-import {allNotes, createNote} from "./db.js";
+import { allNotes, createNote, deleteNote } from "./db.js";
 
 const host = "127.0.0.1";
 const port = 3000;
@@ -23,19 +23,39 @@ const server = createServer((req, res) => {
     if (url === "/" && method === "GET"){
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.write(JSON.stringify({"id" : 1, "name" : "Alex"}));
+        res.write(JSON.stringify({"id" : 1, "name" : "ajlsd;alskjfd"}));
+        res.end();
     }
     if (url === "/notes" && method === "POST"){
         res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json")
         let body = [];
-        req.on("data", chunk => body.push(chunk));
-        res.on(end => {
-            const buffer = Buffer.concat(body); 
+        let text;
+        req.on("data", (chunk) => body.push(chunk));
+        req.on("end", () => {
+            const buffer = Buffer.concat(body);
             const rawDataString = buffer.toString();
             const data = JSON.parse(rawDataString);
-            console.log();
+            createNote(data);
+            console.log(allNotes());
         });
-        res.end();
+        res.end(JSON.stringify({"statusCode" : 200}));
+    }
+    if (url === "/notes/delete" && method === "DELETE"){
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json")
+        let body = [];
+        let text;
+        req.on("data", (chunk) => body.push(chunk));
+        req.on("end", () => {
+            const buffer = Buffer.concat(body);
+            const rawDataString = buffer.toString();
+            const data = JSON.parse(rawDataString);
+            deleteNote(data);
+            console.log(allNotes());
+        });
+        res.end(JSON.stringify({"statusCode" : 200}));
+    }
 });
 
 server.listen(port, host, () => {
