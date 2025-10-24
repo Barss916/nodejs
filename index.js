@@ -23,7 +23,7 @@ const server = createServer((req, res) => {
     if (url === "/" && method === "GET"){
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.write(JSON.stringify({"id" : 1, "name" : "ajlsd;alskjfd"}));
+        res.write(JSON.stringify(allNotes()));
         res.end();
     }
     if (url === "/notes" && method === "POST"){
@@ -43,15 +43,16 @@ const server = createServer((req, res) => {
     }
     if (url === "/notes/delete" && method === "DELETE"){
         res.statusCode = 200;
-        res.setHeader("Content-Type", "application/json")
+        res.setHeader("Content-Type", "application/json");
         let body = [];
-        let text;
         req.on("data", (chunk) => body.push(chunk));
         req.on("end", () => {
             const buffer = Buffer.concat(body);
             const rawDataString = buffer.toString();
             const data = JSON.parse(rawDataString);
+            console.log(data);
             deleteNote(data);
+
             console.log(allNotes());
         });
         res.end(JSON.stringify({"statusCode" : 200}));
