@@ -1,5 +1,5 @@
 import {createServer} from "node:http";
-import { allNotes, createNote, deleteNote } from "./db.js";
+import { allNotes, createNote, deleteNote, putNote } from "./db.js";
 
 const host = "127.0.0.1";
 const port = 3000;
@@ -52,7 +52,20 @@ const server = createServer((req, res) => {
             const data = JSON.parse(rawDataString);
             console.log(data);
             deleteNote(data);
-
+            console.log(allNotes());
+        });
+        res.end(JSON.stringify({"statusCode" : 200}));
+    }
+    if (url === "/notes/patch" && method === "PUT"){
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        let body = [];
+        req.on("data", (chunk) => body.push(chunk));
+        req.on("end", () => {
+            const buffer = Buffer.concat(body);
+            const rawDataString = buffer.toString();
+            const data = JSON.parse(rawDataString);
+            putNote(data);
             console.log(allNotes());
         });
         res.end(JSON.stringify({"statusCode" : 200}));

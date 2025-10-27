@@ -47,7 +47,16 @@ export function createNote(dto) {
 export function deleteNote(dto) {
     const index = notesList.findIndex((i) => i.id === dto.id);
     if(index === -1){
-        return false;
+        return {statusCode: "404 IT DOESNT WORK"};
     }
     notesList.splice(index, 1);
+}
+
+export function putNote(dto) {
+    const index = notesList.findIndex((i) => i.id === dto.id);
+    if(index === -1){
+        return {statusCode: "404 IT DOESNT WORK"};
+    }
+    notesList[index].title = dto.title;
+    notesList[index].tag = dto.tag;
 }
