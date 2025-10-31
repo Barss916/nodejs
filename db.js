@@ -1,25 +1,6 @@
 let maxId = 1;
 
-let notesList = [{
-    "id": 1,
-    "title": "fdas",
-    "tag": 12
-},
-{
-    "id": 2,
-    "title": "fdas",
-    "tag": 12
-},
-{
-    "id": 3,
-    "title": "fdas",
-    "tag": 12
-},
-{
-    "id": 4,
-    "title": "fdas",
-    "tag": 12
-}];
+let notesList = [];
 
 function getMaxId() {
     for (let note of notesList) {
@@ -39,7 +20,8 @@ export function createNote(dto) {
     const newNote = {
         "id": maxId++,
         "title": dto.title,
-        "tag": dto.tag
+        "tag": dto.tag,
+        "date": dto.date
     }
     notesList.push(newNote);
 }
@@ -47,7 +29,7 @@ export function createNote(dto) {
 export function deleteNote(dto) {
     const index = notesList.findIndex((i) => i.id === dto.id);
     if(index === -1){
-        return {statusCode: "404 IT DOESNT WORK"};
+        return false;
     }
     notesList.splice(index, 1);
 }
@@ -55,7 +37,7 @@ export function deleteNote(dto) {
 export function putNote(dto) {
     const index = notesList.findIndex((i) => i.id === dto.id);
     if(index === -1){
-        return {statusCode: "404 IT DOESNT WORK"};
+        return false;
     }
     notesList[index].title = dto.title;
     notesList[index].tag = dto.tag;

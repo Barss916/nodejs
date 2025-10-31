@@ -2,7 +2,7 @@ import {createServer} from "node:http";
 import { allNotes, createNote, deleteNote, putNote } from "./db.js";
 
 const host = "127.0.0.1";
-const port = 3000;
+const port = 5000;
 
 // function parseData () {
 //     let body = [];
@@ -18,6 +18,7 @@ const port = 3000;
 // }
 
 const server = createServer((req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
     const method = req.method;
     const url = req.url;
     if (url === "/" && method === "GET"){
@@ -50,11 +51,14 @@ const server = createServer((req, res) => {
             const buffer = Buffer.concat(body);
             const rawDataString = buffer.toString();
             const data = JSON.parse(rawDataString);
-            console.log(data);
-            deleteNote(data);
-            console.log(allNotes());
+            const result = deleteNote(data);
+            if (result === false){
+                res.end(JSON.stringify({"statusCode" : 404}));
+            }
+            else {
+                res.end(JSON.stringify({"statusCode" : 200}));
+            }
         });
-        res.end(JSON.stringify({"statusCode" : 200}));
     }
     if (url === "/notes/patch" && method === "PUT"){
         res.statusCode = 200;
@@ -65,10 +69,14 @@ const server = createServer((req, res) => {
             const buffer = Buffer.concat(body);
             const rawDataString = buffer.toString();
             const data = JSON.parse(rawDataString);
-            putNote(data);
-            console.log(allNotes());
+            const result = putNote(data);
+            if (result === false){
+                res.end(JSON.stringify({"statusCode" : 404}));
+            }
+            else {
+                res.end(JSON.stringify({"statusCode" : 200}));
+            }
         });
-        res.end(JSON.stringify({"statusCode" : 200}));
     }
 });
 
