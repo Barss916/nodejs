@@ -21,7 +21,7 @@ export function createNote(dto) {
         "id": maxId++,
         "title": dto.title,
         "tag": dto.tag,
-        "date": dto.date
+        "date": dto.date,
     }
     notesList.push(newNote);
 }
@@ -32,13 +32,4 @@ export function deleteNote(dto) {
         return false;
     }
     notesList.splice(index, 1);
-}
-
-export function putNote(dto) {
-    const index = notesList.findIndex((i) => i.id === dto.id);
-    if(index === -1){
-        return false;
-    }
-    notesList[index].title = dto.title;
-    notesList[index].tag = dto.tag;
 }
