@@ -1,26 +1,22 @@
-import {createServer} from "node:http";
+import { createServer } from "node:http";
 import { allNotes, createNote, deleteNote } from "./db.js";
 
 const host = "127.0.0.1";
 const port = 5000;
 
-// function parseData () {
-//     let body = [];
-//     let result;
-//     req.on("data", chunk => body.push(chunk));
-//     res.on(end => {
-//         const buffer = Buffer.concat(body); 
-//         const rawDataString = buffer.toString();
-//         const data = JSON.parse(rawDataString);
-//         result = data;
-//     })
-//     return data;
-// }
-
 const server = createServer((req, res) => {
     const method = req.method;
     const url = req.url;
     res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    if (method === "OPTIONS") {
+        res.writeHead(204);
+        res.end();
+        return;
+    }
+
     if (url === "/" && method === "GET"){
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
@@ -38,7 +34,6 @@ const server = createServer((req, res) => {
             const rawDataString = buffer.toString();
             const data = JSON.parse(rawDataString);
             createNote(data);
-            console.log(allNotes());
         });
         res.end(JSON.stringify({"statusCode" : 200}));
     }
@@ -51,10 +46,7 @@ const server = createServer((req, res) => {
             const buffer = Buffer.concat(body);
             const rawDataString = buffer.toString();
             const data = JSON.parse(rawDataString);
-            console.log(data);
             deleteNote(data);
-
-            console.log(allNotes());
         });
         res.end(JSON.stringify({"statusCode" : 200}));
     }
