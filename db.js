@@ -33,3 +33,12 @@ export function deleteNote(dto) {
     }
     notesList.splice(index, 1);
 }
+
+export function updateNote(dto) {
+    const index = notesList.findIndex((i) => i.id === dto.id);
+    if(index === -1){
+        return false;
+    }
+    notesList[index].title = dto.title;
+    notesList[index].tag = dto.tag;
+}
